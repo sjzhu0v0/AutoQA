@@ -66,7 +66,7 @@ def convert_all_pngs_to_pdf(directory, output_pdf, page_size):
             c.drawImage(png_file, x_offset, y_offset, width=img_width, height=img_height)
 
             c.setFont("Helvetica", 10)
-            c.drawString(10, height - 50, "Negetive Eta")
+            # c.drawString(10, height - 50, "Negetive Eta")
 
             page_number_text = f"Page {c.getPageNumber()}"
             c.setFont("Helvetica", 10)
