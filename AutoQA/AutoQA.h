@@ -276,8 +276,6 @@ void AutoQA::ProcessHistograms(int index_method) {
 
 #define DefaultShowHist                                                        \
   gStyle->SetOptStat(0);                                                       \
-  gStyle->SetPadTopMargin(0.15);                                               \
-  gStyle->SetPadRightMargin(0.15);                                             \
   TCanvas *c = new TCanvas(Form("canvas_%d", GenerateUID()),                   \
                            Form("canvas_%d", GenerateUID()), 800, 600);        \
   int demension_hist = ((TH1 *)histogram)->GetDimension();                     \
@@ -291,11 +289,16 @@ void AutoQA::ProcessHistograms(int index_method) {
     TH3 *hist = reinterpret_cast<TH3 *>(histogram);                            \
     hist->Draw("box");                                                         \
   }                                                                            \
-  for (auto &index_method_show : index_method) {                         \
+  for (auto &index_method_show : index_method) {                               \
     CanvasSetting(c, histogram, index_method_show);                            \
   }                                                                            \
+  TString tag2written = getLastButOnePathComponent(fPath_output);              \
+  TLatex *text = new TLatex(0., 0.97, tag2written);                            \
+  text->SetNDC();                                                              \
+  text->SetTextSize(0.03);                                                     \
+  text->Draw();                                                                \
   TString name_canvas_output =                                                 \
-      Form((fPath_output + "/%s.png").Data(), histogram->GetName());           \
+      Form((fPath_output + "/%s.pdf").Data(), histogram->GetName());           \
   c->SaveAs(name_canvas_output);
 
 void AutoQA::ShowHistograms(int type, vector<int> index_method,
