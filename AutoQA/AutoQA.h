@@ -298,7 +298,7 @@ void AutoQA::ProcessHistograms(int index_method) {
   text->SetTextSize(0.03);                                                     \
   text->Draw();                                                                \
   TString name_canvas_output =                                                 \
-      Form((fPath_output + "/%s.pdf").Data(), histogram->GetName());           \
+      Form((fPath_output + "/%s.png").Data(), histogram->GetName());           \
   c->SaveAs(name_canvas_output);
 
 void AutoQA::ShowHistograms(int type, vector<int> index_method,
