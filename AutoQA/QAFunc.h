@@ -338,8 +338,11 @@ vector<TObject *> func_kDEdxVpLowBoundary(vector<TObject *> vec_h1, double *par,
     TH1D *h1_temp = h2_input->ProjectionY(
         Form("DEdxVpLowBoundary_ProjectionY%d", GenerateUID()), 0,
         bin_bound_x_high_desired);
+    TH1D *h1_temp2 = h2_input->ProjectionY(
+        Form("DEdxVpLowBoundary_ProjectionY%d", GenerateUID()),
+        bin_bound_x_high_desired, bin_bound_x_high_desired);
     double n = h1_temp->Integral();
-    double mean = h1_temp->GetMean();
+    double mean = h1_temp2->GetMean();
     double n_low = h1_temp->Integral(0, h1_temp->FindBin(mean));
     double frac = n_low / n / (*(par + 1));
     h1_result->SetBinContent(i + 1, frac);
