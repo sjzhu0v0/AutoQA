@@ -20,6 +20,7 @@
 #include "TStyle.h"
 #include "TSystem.h"
 #include "TTree.h"
+#include <TLatex.h>
 #include <array>
 #include <fstream>
 #include <set>
@@ -38,20 +39,20 @@ using namespace std;
 
 TString outputDir;
 
-void DrawLine(TCanvas* c, TH2* h) {
-	c->cd();
-	double low = h->GetYaxis()->GetXmin();
-	double high = h->GetYaxis()->GetXmax();
-	for (int i = 0; i < 18; i++) {
-		double x = i*TMath::Pi()/9.;
-		TLine* line = new TLine(x,low,x,high);
-		line->SetLineStyle(10);
-		line->Draw();
-		x += TMath::Pi()/25.;
-		TLatex* tex = new TLatex(x,high,Form("%d",i));
-		tex->SetTextSize(0.03);
-		tex->Draw();
-	}
+void DrawLine(TCanvas *c, TH2 *h) {
+  c->cd();
+  double low = h->GetYaxis()->GetXmin();
+  double high = h->GetYaxis()->GetXmax();
+  for (int i = 0; i < 18; i++) {
+    double x = i * TMath::Pi() / 9.;
+    TLine *line = new TLine(x, low, x, high);
+    line->SetLineStyle(10);
+    line->Draw();
+    x += TMath::Pi() / 25.;
+    TLatex *tex = new TLatex(x, high, Form("%d", i));
+    tex->SetTextSize(0.03);
+    tex->Draw();
+  }
 }
 
 //***************************************************************************************
@@ -62,7 +63,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
 
   outputDir = par_output;
   TFile *f = TFile::Open(par_input);
-  TFile *f_output = new TFile(outputDir+"/output.root","recreate");
+  TFile *f_output = new TFile(outputDir + "/output.root", "recreate");
   f->ls(); // // O2tpctofv0Tree
 
   // cout << " *********** check file ********  " << endl;
@@ -549,8 +550,9 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
   for (Int_t i = 0; i < nTrk; i++) {
 
     Tree_skimmed_V0->GetEntry(i);
-    if (fEta >= 0) continue;
-   // if (fPhi <= 11.*TMath::Pi()/9. || fPhi >= 12.*TMath::Pi()/9.) continue;
+    if (fEta >= 0)
+      continue;
+    // if (fPhi <= 11.*TMath::Pi()/9. || fPhi >= 12.*TMath::Pi()/9.) continue;
     // /////----------------------- check Run Number ---------------------
 
     //////------- exclude all those mixed runs from the tree
@@ -570,9 +572,9 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
 
     /////-----------------------------------------------------------
     ////------ here have to calculate to get momentum:
-    ///https://github.com/AliceO2Group/AliceO2/blob/dev/Framework/Core/include/Framework/AnalysisDataModel.h#L156-L157
+    /// https://github.com/AliceO2Group/AliceO2/blob/dev/Framework/Core/include/Framework/AnalysisDataModel.h#L156-L157
     ///--- 0.5 *  ( TMath::Tan( TMath::PI/4 - 0.5* TMath::ATan(fTgl))  +  1/(
-    ///TMath::Tan( TMath::PI/4 - 0.5* TMath::ATan(fTgl))) )  * (1/fSigned1Pt)
+    /// TMath::Tan( TMath::PI/4 - 0.5* TMath::ATan(fTgl))) )  * (1/fSigned1Pt)
 
     ////---- all tracks
     if (fTPCInnerParam > 0.6 && fTPCInnerParam < 5.0) {
@@ -652,7 +654,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
         if (fTPCInnerParam > Vary_pT[j] && fTPCInnerParam < Vary_pT[j + 1]) {
 
           //-- here there is a calculation to get the number of TPCCluster
-          //founded, 152/fNormNClustersTPC^2
+          // founded, 152/fNormNClustersTPC^2
           h_Electron_dEdx_vs_NclTPC_V0[j]->Fill(
               152 / (fNormNClustersTPC * fNormNClustersTPC), fTPCSignal);
 
@@ -940,7 +942,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_e->SetTicky(1);
     c_phi_e->SetLogz();
     h_Ncls_ele_Phi[j]->Draw("colz");
-    DrawLine(c_phi_e,h_Ncls_ele_Phi[j]);
+    DrawLine(c_phi_e, h_Ncls_ele_Phi[j]);
     c_phi_e->SaveAs(outputDir + "/h_2D_electron_NclTPC_vs_Phi_in_" +
                     Form("%0.1f_pT_%0.1f__skimtreeV0_.png", Vary_pT_pr_pi[j],
                          Vary_pT_pr_pi[j + 1]));
@@ -952,7 +954,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_e1->SetTicky(1);
     c_phi_e1->SetLogz();
     h_dEdx_Phi_ele[j]->Draw("colz");
-    DrawLine(c_phi_e1,h_dEdx_Phi_ele[j]);
+    DrawLine(c_phi_e1, h_dEdx_Phi_ele[j]);
     c_phi_e1->SaveAs(outputDir + "/h_2D_electron_dEdx_vs_Phi_in_" +
                      Form("%0.1f_pT_%0.1f__skimtreeV0_.png", Vary_pT_pr_pi[j],
                           Vary_pT_pr_pi[j + 1]));
@@ -1024,7 +1026,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_pion->SetTicky(1);
     c_phi_pion->SetLogz();
     h_Ncls_pion_Phi[j]->Draw("colz");
-    DrawLine(c_phi_pion,h_Ncls_pion_Phi[j]);
+    DrawLine(c_phi_pion, h_Ncls_pion_Phi[j]);
 
     c_phi_pion->SaveAs(outputDir + "/h_2D_pion_NclTPC_vs_Phi_in_" +
                        Form("%0.1f_pT_%0.1f__skimtreeV0_.png", Vary_pT_pr_pi[j],
@@ -1035,7 +1037,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_pr->SetTicky(1);
     c_phi_pr->SetLogz();
     h_Ncls_proton_Phi[j]->Draw("colz");
-    DrawLine(c_phi_pr,h_Ncls_proton_Phi[j]);
+    DrawLine(c_phi_pr, h_Ncls_proton_Phi[j]);
     c_phi_pr->SaveAs(outputDir + "/h_2D_proton_NclTPC_vs_Phi_in_" +
                      Form("%0.1f_pT_%0.1f__skimtreeV0_.png", Vary_pT_pr_pi[j],
                           Vary_pT_pr_pi[j + 1]));
@@ -1047,7 +1049,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_pion1->SetTicky(1);
     c_phi_pion1->SetLogz();
     h_dEdx_Phi_pion[j]->Draw("colz");
-    DrawLine(c_phi_pion1,h_dEdx_Phi_pion[j]);
+    DrawLine(c_phi_pion1, h_dEdx_Phi_pion[j]);
     c_phi_pion1->SaveAs(outputDir + "/h_2D_pion_dEdx_vs_Phi_in_" +
                         Form("%0.1f_pT_%0.1f__skimtreeV0_.png",
                              Vary_pT_pr_pi[j], Vary_pT_pr_pi[j + 1]));
@@ -1057,7 +1059,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
     c_phi_pr1->SetTicky(1);
     c_phi_pr1->SetLogz();
     h_dEdx_Phi_proton[j]->Draw("colz");
-    DrawLine(c_phi_pr1,h_dEdx_Phi_proton[j]);
+    DrawLine(c_phi_pr1, h_dEdx_Phi_proton[j]);
     c_phi_pr1->SaveAs(outputDir + "/h_2D_proton_dEdx_vs_Phi_in_" +
                       Form("%0.1f_pT_%0.1f__skimtreeV0_.png", Vary_pT_pr_pi[j],
                            Vary_pT_pr_pi[j + 1]));
@@ -1140,7 +1142,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
       c11->SetTicky(1);
       c11->SetLogz();
       h_dEdx_Phi_ele_Ncls[j][p]->Draw("colz");
-      DrawLine(c11,h_dEdx_Phi_ele_Ncls[j][p]);
+      DrawLine(c11, h_dEdx_Phi_ele_Ncls[j][p]);
       c11->SaveAs(outputDir +
                   Form("/h_2D_electron_dEdx_vs_Phi_Ncls_%.1f__%.1f__%s.png",
                        Vary_pT[j], Vary_pT[j + 1], Ncls_range.c_str()));
@@ -1173,7 +1175,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
       c11->SetTicky(1);
       c11->SetLogz();
       h_dEdx_Phi_pion_Ncls[j][p]->Draw("colz");
-      DrawLine(c11,h_dEdx_Phi_pion_Ncls[j][p]);
+      DrawLine(c11, h_dEdx_Phi_pion_Ncls[j][p]);
       c11->SaveAs(outputDir +
                   Form("/h_2D_pion_dEdx_vs_Phi_NCls_%0.1f__%0.1f__%s.png",
                        Vary_pT_pr_pi[j], Vary_pT_pr_pi[j + 1],
@@ -1195,7 +1197,7 @@ void QACheck_fromSkimmedTree_negEta(TString par_input, TString par_output) {
       c22->SetTicky(1);
       c22->SetLogz();
       h_dEdx_Phi_proton_Ncls[j][p]->Draw("colz");
-      DrawLine(c22,h_dEdx_Phi_proton_Ncls[j][p]);
+      DrawLine(c22, h_dEdx_Phi_proton_Ncls[j][p]);
       c22->SaveAs(outputDir +
                   Form("/h_2D_proton_dEdx_vs_Phi_NCls_%0.1f__%0.1f__%s.png",
                        Vary_pT_pr_pi[j], Vary_pT_pr_pi[j + 1],
